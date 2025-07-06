@@ -13,16 +13,17 @@ const Navbar = () => {
     { name: "Process", href: "/process" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
-    { name: "Privacy", href: "/privacy" },
   ];
 
   return (
-    <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
+    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-dark">
-              Vortex Strategies
+            <Link href="/" className="text-xl font-bold text-foreground neon-text">
+              <span className="font-orbitron text-transparent bg-gradient-to-r from-neon-purple to-neon-cyan bg-clip-text">
+                VORTEX
+              </span>
             </Link>
           </div>
           
@@ -35,8 +36,8 @@ const Navbar = () => {
                   href={item.href}
                   className={`transition-colors duration-200 ${
                     location === item.href
-                      ? "text-primary font-semibold"
-                      : "text-gray-700 hover:text-primary"
+                      ? "text-neon-cyan font-semibold neon-text"
+                      : "text-foreground hover:text-neon-cyan"
                   }`}
                 >
                   {item.name}
@@ -51,7 +52,7 @@ const Navbar = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 hover:text-primary"
+              className="text-foreground hover:text-neon-cyan"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -61,7 +62,7 @@ const Navbar = () => {
       
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
+        <div className="md:hidden border-t border-border bg-background">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
               <Link
@@ -69,8 +70,8 @@ const Navbar = () => {
                 href={item.href}
                 className={`block px-3 py-2 transition-colors duration-200 ${
                   location === item.href
-                    ? "text-primary font-semibold"
-                    : "text-gray-700 hover:text-primary"
+                    ? "text-neon-cyan font-semibold neon-text"
+                    : "text-foreground hover:text-neon-cyan"
                 }`}
                 onClick={() => setIsOpen(false)}
               >

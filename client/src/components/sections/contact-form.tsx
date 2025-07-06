@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,7 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const ContactForm = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [showCalendar, setShowCalendar] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<ContactFormData>({
@@ -36,6 +37,17 @@ const ContactForm = () => {
       message: "",
     },
   });
+
+  // Handle pre-selected service data
+  useEffect(() => {
+    const selectedService = sessionStorage.getItem('selectedService');
+    if (selectedService) {
+      const serviceData = JSON.parse(selectedService);
+      form.setValue('projectType', serviceData.projectType);
+      form.setValue('message', `I'm interested in your ${serviceData.title} services. Please provide more information about:`);
+      sessionStorage.removeItem('selectedService');
+    }
+  }, [form]);
 
   const contactMutation = useMutation({
     mutationFn: async (data: ContactFormData) => {
@@ -82,70 +94,118 @@ const ContactForm = () => {
   };
 
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-dark mb-4">Get In Touch</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 font-orbitron">
+            <span className="text-transparent bg-gradient-to-r from-neon-purple to-neon-cyan bg-clip-text">
+              INITIATE CONTACT
+            </span>
+          </h2>
           <p className="text-lg text-neutral max-w-3xl mx-auto">
-            Ready to transform your ideas into reality? Let's discuss your project and create something amazing together.
+            Ready to level up your digital presence? Let's team up and create legendary experiences together.
           </p>
         </div>
         
         <div className="grid lg:grid-cols-2 gap-12">
           <div>
-            <h3 className="text-2xl font-semibold text-dark mb-6">Contact Information</h3>
+            <h3 className="text-2xl font-semibold text-foreground mb-6 font-orbitron">COMM CHANNELS</h3>
             <div className="space-y-6">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-neon-purple to-neon-pink rounded-full flex items-center justify-center mr-4 glow-effect">
                   <Mail className="text-white h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-dark">Email</h4>
-                  <p className="text-neutral">vortexgamingstaff@gmail.com</p>
+                  <h4 className="font-semibold text-foreground font-orbitron">DIRECT LINK</h4>
+                  <p className="text-neon-cyan">vortexgamingstaff@gmail.com</p>
                 </div>
               </div>
               
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-neon-cyan to-neon-green rounded-full flex items-center justify-center mr-4 glow-effect">
                   <Globe className="text-white h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-dark">Website</h4>
-                  <p className="text-neutral">www.vortexstratergieslimited.uk</p>
+                  <h4 className="font-semibold text-foreground font-orbitron">HQ PORTAL</h4>
+                  <p className="text-neon-cyan">www.vortexstratergieslimited.uk</p>
                 </div>
               </div>
               
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mr-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-neon-yellow to-neon-pink rounded-full flex items-center justify-center mr-4 glow-effect">
                   <Clock className="text-white h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-dark">Response Time</h4>
-                  <p className="text-neutral">Within 24 hours</p>
+                  <h4 className="font-semibold text-foreground font-orbitron">RESPONSE TIME</h4>
+                  <p className="text-neon-cyan">Mission Critical: &lt;24hrs</p>
                 </div>
               </div>
             </div>
             
-            <Card className="mt-8 bg-gray-50">
+            <Card className="mt-8 gaming-card">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Calendar className="h-5 w-5 mr-2" />
-                  Schedule a Meeting
+                <CardTitle className="flex items-center text-foreground font-orbitron">
+                  <Calendar className="h-5 w-5 mr-2 text-neon-cyan" />
+                  SCHEDULE MISSION BRIEFING
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-neutral mb-4">
-                  Book a free consultation to discuss your project requirements and get a personalized quote.
+                  Book a free strategy session to discuss your project and unlock your digital potential.
                 </p>
-                <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 text-center">
-                  <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-500 mb-4">
-                    Calendly integration placeholder
-                  </p>
-                  <Button className="btn-primary">
-                    Schedule Meeting
-                  </Button>
-                </div>
+                {!showCalendar ? (
+                  <div className="gaming-card p-4 rounded-lg border-2 border-dashed border-neon-cyan text-center">
+                    <Calendar className="h-12 w-12 text-neon-cyan mx-auto mb-2" />
+                    <p className="text-neutral mb-4">
+                      Ready to level up? Let's connect!
+                    </p>
+                    <Button 
+                      className="btn-primary font-orbitron"
+                      onClick={() => setShowCalendar(true)}
+                    >
+                      ACTIVATE CALENDAR
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="gaming-card p-4 rounded-lg">
+                    <div className="aspect-video bg-card rounded-lg border border-border overflow-hidden">
+                      <iframe
+                        src="https://calendly.com/embed_placeholder"
+                        width="100%"
+                        height="100%"
+                        frameBorder="0"
+                        title="Schedule Meeting"
+                        className="rounded-lg"
+                        onError={() => {
+                          // Fallback display
+                          const iframe = document.querySelector('iframe[title="Schedule Meeting"]');
+                          if (iframe && iframe.parentElement) {
+                            iframe.parentElement.innerHTML = `
+                              <div class="flex items-center justify-center h-full text-center p-8">
+                                <div>
+                                  <Calendar class="h-16 w-16 text-neon-cyan mx-auto mb-4" />
+                                  <h3 class="text-lg font-semibold text-foreground mb-2">Calendar Integration</h3>
+                                  <p class="text-neutral mb-4">Connect with us via email to schedule your meeting:</p>
+                                  <a href="mailto:vortexgamingstaff@gmail.com?subject=Meeting Request" 
+                                     class="text-neon-cyan hover:text-neon-pink transition-colors font-semibold">
+                                    vortexgamingstaff@gmail.com
+                                  </a>
+                                </div>
+                              </div>
+                            `;
+                          }
+                        }}
+                      />
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="mt-4 w-full border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black"
+                      onClick={() => setShowCalendar(false)}
+                    >
+                      Hide Calendar
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -234,16 +294,16 @@ const ContactForm = () => {
                 
                 <Button 
                   type="submit" 
-                  className="btn-primary w-full"
+                  className="btn-primary w-full font-orbitron uppercase tracking-wider"
                   disabled={contactMutation.isPending}
                 >
                   {contactMutation.isPending ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Sending...
+                      TRANSMITTING...
                     </>
                   ) : (
-                    "Send Message"
+                    "DEPLOY MESSAGE"
                   )}
                 </Button>
               </form>

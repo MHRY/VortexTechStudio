@@ -44,6 +44,7 @@ export class MemStorage implements IStorage {
       ...submission,
       id,
       createdAt: new Date(),
+      files: submission.files || null,
     };
     this.contactSubmissions.set(id, contactSubmission);
     return contactSubmission;
