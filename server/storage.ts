@@ -1,22 +1,23 @@
-import { users, contactSubmissions, type User, type InsertUser, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { users, contacts, type User, type InsertUser, type Contact, type InsertContact } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
-  getContactSubmissions(): Promise<ContactSubmission[]>;
+  createContact(contact: InsertContact): Promise<Contact>;
+  getContacts(): Promise<Contact[]>;
+  getContact(id: number): Promise<Contact | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
-  private contactSubmissions: Map<number, ContactSubmission>;
+  private contacts: Map<number, Contact>;
   private currentUserId: number;
   private currentContactId: number;
 
   constructor() {
     this.users = new Map();
-    this.contactSubmissions = new Map();
+    this.contacts = new Map();
     this.currentUserId = 1;
     this.currentContactId = 1;
   }
@@ -38,20 +39,27 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
+  async createContact(insertContact: InsertContact): Promise<Contact> {
     const id = this.currentContactId++;
-    const contactSubmission: ContactSubmission = {
-      ...submission,
-      id,
-      createdAt: new Date(),
-      files: submission.files || null,
+    const contact: Contact = { 
+      id, 
+      name: insertContact.name,
+      email: insertContact.email,
+      projectType: insertContact.projectType,
+      message: insertContact.message,
+      files: insertContact.files || null,
+      createdAt: new Date()
     };
-    this.contactSubmissions.set(id, contactSubmission);
-    return contactSubmission;
+    this.contacts.set(id, contact);
+    return contact;
   }
 
-  async getContactSubmissions(): Promise<ContactSubmission[]> {
-    return Array.from(this.contactSubmissions.values());
+  async getContacts(): Promise<Contact[]> {
+    return Array.from(this.contacts.values());
+  }
+
+  async getContact(id: number): Promise<Contact | undefined> {
+    return this.contacts.get(id);
   }
 }
 

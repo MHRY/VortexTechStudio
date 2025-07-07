@@ -8,14 +8,14 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
 });
 
-export const contactSubmissions = pgTable("contact_submissions", {
+export const contacts = pgTable("contacts", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   projectType: text("project_type").notNull(),
   message: text("message").notNull(),
   files: text("files").array(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -23,7 +23,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).pick({
+export const insertContactSchema = createInsertSchema(contacts).pick({
   name: true,
   email: true,
   projectType: true,
@@ -33,5 +33,5 @@ export const insertContactSubmissionSchema = createInsertSchema(contactSubmissio
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
-export type ContactSubmission = typeof contactSubmissions.$inferSelect;
-export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
+export type InsertContact = z.infer<typeof insertContactSchema>;
+export type Contact = typeof contacts.$inferSelect;

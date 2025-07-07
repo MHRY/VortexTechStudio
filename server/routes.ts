@@ -1,80 +1,112 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { insertContactSubmissionSchema } from "@shared/schema";
 import multer from "multer";
-import path from "path";
+import { storage } from "./storage";
+import { insertContactSchema } from "@shared/schema";
 import { z } from "zod";
 
-// Configure multer for file uploads
-const upload = multer({
-  dest: 'uploads/',
+const upload = multer({ 
+  storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['.pdf', '.doc', '.docx', '.zip', '.rar'];
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (allowedTypes.includes(ext)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only PDF, DOC, DOCX, ZIP, and RAR files are allowed.'));
-    }
-  },
+    fileSize: 10 * 1024 * 1024, // 10MB
+    files: 5
+  }
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Contact form submission endpoint
-  app.post("/api/contact", upload.array('files', 5), async (req, res) => {
+  // Contact form endpoint
+  app.post("/api/contact", upload.array("files", 5), async (req, res) => {
     try {
-      // Parse and validate the request body
-      const validatedData = insertContactSubmissionSchema.parse({
-        name: req.body.name,
-        email: req.body.email,
-        projectType: req.body.projectType,
-        message: req.body.message,
-        files: req.files ? (req.files as Express.Multer.File[]).map(file => file.filename) : [],
+      const { name, email, projectType, message } = req.body;
+      
+      // Validate the request body
+      const contactData = insertContactSchema.parse({
+        name,
+        email,
+        projectType,
+        message,
+        files: req.files ? (req.files as Express.Multer.File[]).map(file => file.originalname) : []
       });
 
-      // Store the submission
-      const submission = await storage.createContactSubmission(validatedData);
+      // Store the contact
+      const contact = await storage.createContact(contactData);
 
-      // TODO: Send email notification here
-      console.log('New contact submission:', submission);
+      // In a real application, you would:
+      // 1. Store files in a cloud storage service
+      // 2. Send email notifications
+      // 3. Process the contact request
 
       res.json({ 
-        success: true, 
-        message: "Thank you for your message! We'll get back to you within 24 hours.",
-        id: submission.id 
+        message: "Contact request received successfully! We'll respond within 24 hours.",
+        id: contact.id
       });
     } catch (error) {
-      console.error('Contact form submission error:', error);
+      console.error("Contact form error:", error);
+      
       if (error instanceof z.ZodError) {
-        res.status(400).json({ 
-          success: false, 
-          message: "Please fill in all required fields correctly.",
-          errors: error.errors 
-        });
-      } else {
-        res.status(500).json({ 
-          success: false, 
-          message: "An error occurred while processing your submission. Please try again." 
+        return res.status(400).json({
+          message: "Validation error",
+          errors: error.errors
         });
       }
+      
+      res.status(500).json({
+        message: "Failed to process contact request"
+      });
     }
   });
 
-  // Get all contact submissions (for admin purposes)
-  app.get("/api/contact", async (req, res) => {
+  // Booking appointment endpoint
+  app.post("/api/booking", async (req, res) => {
     try {
-      const submissions = await storage.getContactSubmissions();
-      res.json(submissions);
+      const { name, email, date, time, message } = req.body;
+      
+      if (!name || !email || !date || !time) {
+        return res.status(400).json({ error: "Name, email, date, and time are required" });
+      }
+
+      // Store booking as a contact with special type
+      const bookingData = insertContactSchema.parse({
+        name,
+        email,
+        projectType: "meeting-booking",
+        message: `Booking Request:
+Date: ${new Date(date).toLocaleDateString()}
+Time: ${time}
+${message ? `Message: ${message}` : ''}
+
+Send confirmation to: info@vortexstratergieslimited.uk`,
+        files: []
+      });
+
+      const booking = await storage.createContact(bookingData);
+
+      res.json({ 
+        message: "Booking request submitted successfully! We'll confirm your appointment via email.",
+        id: booking.id 
+      });
     } catch (error) {
-      console.error('Error fetching contact submissions:', error);
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Booking error:", error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          message: "Validation error",
+          errors: error.errors
+        });
+      }
+      
+      res.status(500).json({
+        message: "Failed to process booking request"
+      });
     }
+  });
+
+  // Health check endpoint
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "operational", timestamp: new Date().toISOString() });
   });
 
   const httpServer = createServer(app);
+
   return httpServer;
 }

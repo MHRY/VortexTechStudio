@@ -1,35 +1,22 @@
 import { Link } from "wouter";
-import { Twitter, Linkedin, Github } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-card text-foreground py-12 border-t border-border">
+    <footer className="border-t border-border py-12" style={{ backgroundColor: 'var(--card-bg)' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8">
-          <div className="col-span-2 md:col-span-1">
-            <h3 className="text-xl font-bold mb-4 font-orbitron">
-              <span className="text-transparent bg-gradient-to-r from-neon-purple to-neon-cyan bg-clip-text">
-                VORTEX STRATEGIES
-              </span>
-            </h3>
-            <p className="text-neutral mb-4">
-              Elite digital architects crafting legendary experiences through cutting-edge game development, mobile apps, and web solutions.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-neutral hover:text-neon-cyan transition-colors glow-effect p-2 rounded-full">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-neutral hover:text-neon-pink transition-colors glow-effect p-2 rounded-full">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-neutral hover:text-neon-yellow transition-colors glow-effect p-2 rounded-full">
-                <Github className="h-5 w-5" />
-              </a>
+          <div>
+            <div className="text-2xl font-orbitron font-bold mb-4">
+              <span className="text-neon-cyan">VORTEX</span>
+              <span className="text-neon-pink">STRATEGIES</span>
             </div>
+            <p className="text-neutral font-space">
+              Crafting legendary digital experiences for the next generation.
+            </p>
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4 font-orbitron text-neon-cyan">POWER-UPS</h4>
+            <h4 className="font-orbitron font-bold text-foreground mb-4">SERVICES</h4>
             <ul className="space-y-2 text-neutral">
               <li><Link href="/services" className="hover:text-neon-cyan transition-colors">Game Development</Link></li>
               <li><Link href="/services" className="hover:text-neon-cyan transition-colors">Mobile Apps</Link></li>
@@ -39,28 +26,29 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4 font-orbitron text-neon-pink">HEADQUARTERS</h4>
+            <h4 className="font-orbitron font-bold text-foreground mb-4">COMPANY</h4>
             <ul className="space-y-2 text-neutral">
-              <li><Link href="/about" className="hover:text-neon-pink transition-colors">About Squad</Link></li>
-              <li><Link href="/process" className="hover:text-neon-pink transition-colors">Battle Plan</Link></li>
-              <li><Link href="/contact" className="hover:text-neon-pink transition-colors">Contact Base</Link></li>
-              <li><Link href="/privacy" className="hover:text-neon-pink transition-colors">Privacy Protocol</Link></li>
+              <li><Link href="/about" className="hover:text-neon-cyan transition-colors">About Us</Link></li>
+              <li><Link href="/services" className="hover:text-neon-cyan transition-colors">Portfolio</Link></li>
+              <li><Link href="/contact" className="hover:text-neon-cyan transition-colors">Contact</Link></li>
+              <li><Link href="/privacy" className="hover:text-neon-cyan transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4 font-orbitron text-neon-yellow">COMM LINKS</h4>
-            <div className="space-y-2 text-neutral">
-              <p className="hover:text-neon-yellow transition-colors cursor-pointer">vortexgamingstaff@gmail.com</p>
-              <p className="hover:text-neon-yellow transition-colors cursor-pointer">www.vortexstratergieslimited.uk</p>
+            <h4 className="font-orbitron font-bold text-foreground mb-4">CONTACT</h4>
+            <div className="space-y-2 text-neutral font-space">
+              <p>General inquiries:</p>
+              <p className="text-neon-cyan">info@vortexstratergieslimited.uk</p>
+              <p>Support:</p>
+              <p className="text-neon-cyan">support@vortexstratergieslimited.uk</p>
             </div>
           </div>
         </div>
         
-        <div className="border-t border-border mt-8 pt-8 text-center text-neutral">
-          <p className="font-orbitron">
-            &copy; 2024 <span className="text-transparent bg-gradient-to-r from-neon-purple to-neon-cyan bg-clip-text">VORTEX STRATEGIES LIMITED</span>. 
-            All rights reserved. Game on!
+        <div className="border-t border-border mt-8 pt-8 text-center">
+          <p className="text-neutral font-space">
+            © 2025 Vortex Strategies Ltd. All rights reserved. Built for the gaming community.
           </p>
         </div>
       </div>
